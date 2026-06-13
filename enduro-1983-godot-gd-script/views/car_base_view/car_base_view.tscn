@@ -1,0 +1,38 @@
+[gd_scene load_steps=8 format=3 uid="uid://c8blueawolsox"]
+
+[ext_resource type="Texture2D" uid="uid://d3jde3yegrdon" path="res://assets/sprites/cars/car_1.png" id="1_h2he4"]
+[ext_resource type="Script" uid="uid://b508sysrp24w2" path="res://core/controllers/car_base_controller.gd" id="1_keuta"]
+[ext_resource type="Texture2D" uid="uid://c0ggxo81iuj6r" path="res://assets/sprites/cars/car_2.png" id="2_747he"]
+[ext_resource type="Texture2D" uid="uid://cjajwqq56ed22" path="res://assets/sprites/cars/light_car.png" id="4_amjfo"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_s1dig"]
+atlas = ExtResource("1_h2he4")
+region = Rect2(0, 0, 128, 44)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xurnm"]
+atlas = ExtResource("2_747he")
+region = Rect2(0, 0, 128, 44)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_x7njc"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_s1dig")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xurnm")
+}],
+"loop": true,
+"name": &"default",
+"speed": 8.0
+}]
+
+[node name="CarBaseView" type="AnimatedSprite2D"]
+sprite_frames = SubResource("SpriteFrames_x7njc")
+frame = 1
+frame_progress = 0.49810743
+script = ExtResource("1_keuta")
+
+[node name="HeadLights" type="Sprite2D" parent="."]
+unique_name_in_owner = true
+texture = ExtResource("4_amjfo")

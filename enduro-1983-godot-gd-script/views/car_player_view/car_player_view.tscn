@@ -1,0 +1,7 @@
+[gd_scene load_steps=3 format=3 uid="uid://d0fe3ovbsdrog"]
+
+[ext_resource type="PackedScene" uid="uid://c8blueawolsox" path="res://views/car_base_view/car_base_view.tscn" id="1_cx1t6"]
+[ext_resource type="Script" uid="uid://dy06v856ysul8" path="res://core/controllers/car_player_view_controller.gd" id="2_7buge"]
+
+[node name="CarPlayerView" instance=ExtResource("1_cx1t6")]
+script = ExtResource("2_7buge")
