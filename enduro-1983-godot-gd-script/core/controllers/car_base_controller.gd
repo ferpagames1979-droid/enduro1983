@@ -24,7 +24,7 @@ func _on_ready() -> void:
 	pass
 	
 func _process(delta: float) -> void:
-	if model.is_chashed:
+	if model.is_crashed:
 		return
 	_handle_movement(delta)
 	_clamp_position()

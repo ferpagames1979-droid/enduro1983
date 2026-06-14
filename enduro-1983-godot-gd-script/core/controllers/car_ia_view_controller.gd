@@ -18,7 +18,7 @@ func _on_ready() -> void:
 							PrintLogManager.LogType.INFO,
 							"_on_ready")
 							
-func _handle_movement(delta: float) -> void:
+func _handle_movement(_delta: float) -> void:
 	pass
 				
 func set_night_mode(is_night : bool) -> void:

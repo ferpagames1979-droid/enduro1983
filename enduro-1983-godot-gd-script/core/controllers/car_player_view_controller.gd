@@ -31,5 +31,5 @@ func _handle_movement(delta: float) -> void:
 		sprite_frames.set_animation_speed("default", 8)
 	SignalBus.CarPlayerViewControllerSignal_speed_changed.emit(model.current_speed)
 				
-func set_night_mode(is_night : bool) -> void:
+func set_night_mode(_is_night : bool) -> void:
 	head_lights.visible = false

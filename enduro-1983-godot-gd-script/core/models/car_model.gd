@@ -17,4 +17,4 @@ var deceleration : float = 40
 var brake_force : float = 120
 
 var lateral_speed : float = 250
-var is_chashed : bool = false
+var is_crashed : bool = false
