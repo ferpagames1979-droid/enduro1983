@@ -7,4 +7,5 @@
 script = ExtResource("1_vbs4l")
 
 [node name="CarPlayerView" parent="." instance=ExtResource("2_wvyay")]
+unique_name_in_owner = true
 position = Vector2(587, 490)
