@@ -1,4 +1,4 @@
-[gd_scene load_steps=3 format=3 uid="uid://dfi2syosl3b0s"]
+[gd_scene load_steps=3 format=3 uid="uid://bjg0g573bt1ss"]
 
 [ext_resource type="Script" uid="uid://ca24fagfwmt32" path="res://core/controllers/game_view_controller.gd" id="1_vbs4l"]
 [ext_resource type="PackedScene" uid="uid://d0fe3ovbsdrog" path="res://views/car_player_view/car_player_view.tscn" id="2_wvyay"]
@@ -7,5 +7,4 @@
 script = ExtResource("1_vbs4l")
 
 [node name="CarPlayerView" parent="." instance=ExtResource("2_wvyay")]
-unique_name_in_owner = true
-position = Vector2(583, 585)
+position = Vector2(587, 490)

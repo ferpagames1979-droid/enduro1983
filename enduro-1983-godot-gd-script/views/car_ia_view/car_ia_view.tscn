@@ -1,7 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://c4ayj4dobo77c"]
+[gd_scene load_steps=3 format=3 uid="uid://ywj742yon71p"]
 
-[ext_resource type="PackedScene" uid="uid://c8blueawolsox" path="res://views/car_base_view/car_base_view.tscn" id="1_a12hm"]
-[ext_resource type="Script" uid="uid://c0p47l4ybpd1t" path="res://core/controllers/car_ia_view_controller.gd" id="2_f6kqp"]
+[ext_resource type="PackedScene" uid="uid://c8blueawolsox" path="res://views/car_base_view/car_base_view.tscn" id="1_kl00o"]
+[ext_resource type="Script" uid="uid://dlq50qcfq0ayt" path="res://core/controllers/car_ia_view_controller.gd" id="2_f6kqp"]
 
-[node name="CarIAView" instance=ExtResource("1_a12hm")]
+[node name="CarIaView" instance=ExtResource("1_kl00o")]
 script = ExtResource("2_f6kqp")
