@@ -15,7 +15,7 @@ func _ready() -> void:
 	# Limites FIXOS baseados na largura da BASE do trapézio (800px),
 	# centrada em 576 — a base da pista nunca se move (offset = 0
 	# sempre, por design do PistaBaseViewController)
-	const ROAD_BOTTOM_HALF_WIDTH: float = 300.0  # road_bottom_width / 2
+	const ROAD_BOTTOM_HALF_WIDTH: float = 400.0  # road_bottom_width / 2
 	const ROAD_CENTER_X: float = 576.0
 
 	var car_half_width: float = (sprite_frames.get_frame_texture("default", 0)

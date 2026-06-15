@@ -21,7 +21,7 @@ repeat_times = 2
 
 [node name="CloudsSprite" type="Sprite2D" parent="Clouds"]
 unique_name_in_owner = true
-position = Vector2(576, 0)
+position = Vector2(576, 97)
 texture = ExtResource("1_mr5mm")
 
 [node name="City" type="Parallax2D" parent="."]
@@ -31,7 +31,7 @@ repeat_times = 2
 
 [node name="CitySprite" type="Sprite2D" parent="City"]
 unique_name_in_owner = true
-position = Vector2(586, 100)
+position = Vector2(592, 183)
 texture = ExtResource("2_i1k0s")
 
 [node name="RoadEdgeLeft" type="Line2D" parent="."]

@@ -13,4 +13,4 @@ z_index = -1
 
 [node name="CarPlayerView" parent="." instance=ExtResource("2_wvyay")]
 unique_name_in_owner = true
-position = Vector2(579, 590)
+position = Vector2(579, 543)

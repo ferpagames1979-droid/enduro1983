@@ -1,26 +1,26 @@
 ## =================================================
 ## CLASS: PistaBaseViewController
-## DESCRIPTION: Controls the road curve conveyor-belt
-## system combined with a smooth perspective trapezoid
-## (thin at horizon, wide at base). The root node IS
-## the climate background (ColorRect). Draws two Line2D
-## (left/right edges) using a per-point offset array.
+## DESCRIPTION: Controls the road curve system with a
+## perspective trapezoid (thin at horizon, wide at
+## base). The root node IS the climate background
+## (ColorRect). Draws two Line2D (left/right edges).
 ##
-## v1.8: accumulated_offset changes by a FIXED rate
-## (curve_rate) per tick during curves — independent of
-## segment duration. This guarantees local_curvature
-## (offsets[0] - offsets[N-1]) is always visible
-## (~curve_rate * point_count), regardless of how long
-## the curve segment lasts. During straights,
-## accumulated_offset decays toward 0.
+## v4.1 — CUBIC BEZIER CURVE: each edge is a single cubic
+## Bezier curve (P0=horizon, P1, P2, P3=base). P0 and P3
+## are always centered on center_x. P1 receives the full
+## curve_amount * max_curve_offset; P2 receives an
+## attenuated 0.3x offset — smooth across the whole
+## extent, monotonic by construction (no crossing, no
+## ripple, no kinks).
+## curve_amount eases (lerp) toward a target defined by
+## curve_queue (-1/0/1), with curves lasting 30-60s and
+## straights 5-10s.
 ##
-## Offsets are smoothed (double pass, wide window) before
-## drawing to eliminate kinks/discontinuities.
 ## Sky (clouds) scrolls at constant speed via autoscroll;
 ## city reacts to the curve via scroll_offset.
-## Emits the local curvature via SignalBus.
+## Emits curve_amount via SignalBus.
 ## AUTHOR: Ferpa Games
-## VERSION: 1.8.0
+## VERSION: 4.1.0
 ## =================================================
 class_name PistaBaseViewController
 extends ColorRect
@@ -36,7 +36,11 @@ var model: PistaBaseModel
 
 var _current_speed: float = 200.0
 
+## Direção do segmento atual (-1, 0, 1) — atualizada apenas
+## quando um novo segmento é consumido da fila
+var _current_segment_direction: int = 0
 
+## 📌
 func _ready() -> void:
 	model = PistaBaseModel.new()
 	PrintLogManager.printlog(CLASS_NAME_LOG,
@@ -46,79 +50,49 @@ func _ready() -> void:
 		_on_speed_changed)
 	color = model.color_day
 
-	randomize()  ## ← ADICIONAR — sem isso, randi_range pode repetir
+	randomize()
 
+	# Espessura fina das linhas — fiel ao traço de 1px do Atari
 	road_edge_left.width = 2.0
 	road_edge_right.width = 2.0
 
+	# Céu: movimento horizontal constante, independente da curva
 	clouds.autoscroll = Vector2(-8.0, 0.0)
 
-	_setup_offsets()
 	_setup_road_points()
 	_fill_curve_queue()
-	
-	var test_rolls: Array[int] = []
-	for i in 30:
-		test_rolls.append(randi_range(-1, 1))
-	print("ROLLS: ", test_rolls)
 
 ## 📌
-## Inicializa o array offsets com zeros — pista reta no início
-func _setup_offsets() -> void:
-	model.offsets.clear()
-	for i in model.point_count:
-		model.offsets.append(0.0)
-
-## 📌
-## Cria os pontos iniciais — TRAPÉZIO com perspectiva suave:
-## largura cresce com t^1.5, fina no horizonte, larga na base
+## Cria os pontos iniciais — pista reta (curve_amount = 0).
+## A geometria real é calculada em _redraw_road_edges() todo frame.
 func _setup_road_points() -> void:
 	road_edge_left.clear_points()
 	road_edge_right.clear_points()
 
 	for i in model.point_count:
-		var t: float = float(i) / float(model.point_count - 1)
-		var perspective: float = pow(t, 1.5)
-		var y: float = lerp(model.horizon_y, model.base_y, t)
-		var half_width: float = lerp(
-			model.road_top_width / 2.0,
-			model.road_bottom_width / 2.0,
-			perspective)
-
-		road_edge_left.add_point(Vector2(model.center_x - half_width, y))
-		road_edge_right.add_point(Vector2(model.center_x + half_width, y))
+		road_edge_left.add_point(Vector2.ZERO)
+		road_edge_right.add_point(Vector2.ZERO)
 
 ## 📌
 ## Sorteia um lote de segmentos. RETAS (direção 0) são mais curtas
 ## (5-10s); CURVAS (direção ±1) são mais longas (30-60s) — fiel
 ## ao feeling de uma rodovia real (retas curtas, curvas longas).
+## Garante pelo menos a metade dos segmentos sendo curva, para
+## evitar longas sequências de retas por acaso estatístico.
 func _fill_curve_queue() -> void:
 	var directions: Array[int] = []
 
-	# Garante pelo menos curve_batch_size/2 curvas
 	var min_curves: int = model.curve_batch_size / 2
 	for i in min_curves:
 		directions.append(1 if randi() % 2 == 0 else -1)
 
-	# Completa o restante aleatoriamente (pode ser reta ou curva)
 	for i in (model.curve_batch_size - min_curves):
 		directions.append(randi_range(-1, 1))
 
 	directions.shuffle()
 
 	for direction in directions:
-		var duration: int
-		if direction == 0:
-			duration = randi_range(
-				model.straight_duration_min,
-				model.straight_duration_max)
-		else:
-			duration = randi_range(
-				model.curve_duration_min,
-				model.curve_duration_max)
-
-		for j in duration:
-			model.curve_queue.append(direction)
+		model.curve_queue.append(direction)
 
 ## 📌
 func _process(delta: float) -> void:
@@ -126,21 +100,8 @@ func _process(delta: float) -> void:
 	_redraw_road_edges()
 	_apply_curve_offset()
 
-	var local_curvature: float = model.offsets[0] - model.offsets[model.point_count - 1]
-
-	## 📌 DEBUG TEMPORÁRIO — remover depois
-	if Engine.get_process_frames() % 30 == 0:
-		print("accumulated=%.3f offsets[0]=%.3f offsets[79]=%.3f curvature=%.3f queue_dir=%d queue_size=%d" % [
-			model.accumulated_offset,
-			model.offsets[0],
-			model.offsets[model.point_count - 1],
-			local_curvature,
-			model.curve_queue[0] if not model.curve_queue.is_empty() else -99,
-			model.curve_queue.size()
-		])
-
 	SignalBus.PistaBaseViewControllerSignal_road_offset_changed.emit(
-		local_curvature)
+		model.curve_amount)
 
 ## 📌
 ## Recebe a velocidade atual do carro via SignalBus
@@ -160,97 +121,78 @@ func _advance_tick_timer(delta: float) -> void:
 		_do_tick()
 
 ## 📌
-## Executa um "tick" da esteira:
+## Executa um "tick":
 ## 1. Garante que há segmento na fila (sorteia lote se vazio)
-## 2. CURVA: accumulated_offset += direção * curve_rate (incremento
-##    FIXO por tick, independente da duração — garante que
-##    local_curvature seja sempre visível, em curvas longas ou curtas)
-##    RETA: accumulated_offset decai lentamente em direção a 0
-## 3. Desloca o array offsets — novo valor entra no horizonte
+## 2. Se o segmento atual acabou (ticks_remaining <= 0), consome
+##    o próximo da fila, guarda sua direção e define a duração
+## 3. curve_amount se aproxima suavemente (lerp) do alvo definido
+##    pela direção do segmento atual (-1, 0, ou 1)
 func _do_tick() -> void:
 	if model.curve_queue.is_empty():
 		_fill_curve_queue()
 
-	var current_direction: int = model.curve_queue[0]
+	if model.ticks_remaining <= 0:
+		_current_segment_direction = model.curve_queue[0]
+		if _current_segment_direction == 0:
+			model.ticks_remaining = randi_range(
+				model.straight_duration_min,
+				model.straight_duration_max)
+		else:
+			model.ticks_remaining = randi_range(
+				model.curve_duration_min,
+				model.curve_duration_max)
+		model.curve_queue.pop_front()
 
-	if current_direction != 0:
-		model.accumulated_offset += float(current_direction) * model.curve_rate
-		model.accumulated_offset = clamp(
-			model.accumulated_offset,
-			-model.accumulated_offset_limit,
-			model.accumulated_offset_limit)
-	else:
-		model.accumulated_offset += (0.0 - model.accumulated_offset) \
-			* model.straight_decay_rate
+	var target: float = float(_current_segment_direction)
+	model.curve_amount += (target - model.curve_amount) * model.curve_amount_lerp_speed
 
-	model.offsets.pop_back()
-	model.offsets.insert(0, model.accumulated_offset)
-
-	model.curve_queue.pop_front()
-
-## 📌
-## Suaviza um array de offsets com média móvel — janela de 9
-## (i-4 até i+4). Elimina ruído/quinas residuais no traçado.
-func _smooth_array(source: Array[float]) -> Array[float]:
-	var smoothed: Array[float] = []
-	for i in source.size():
-		var sum: float = 0.0
-		var count: int = 0
-		for j in range(-4, 5):  # janela de 9: i-4 até i+4
-			var idx: int = i + j
-			if idx >= 0 and idx < source.size():
-				sum += source[idx]
-				count += 1
-		smoothed.append(sum / float(count))
-	return smoothed
+	model.ticks_remaining -= 1
 
 ## 📌
-## Redesenha as duas Line2D combinando TRAPÉZIO + ESTEIRA.
-## A esteira passa por DUAS passadas de suavização (janela de 9)
-## antes de ser usada. A BASE (último ponto) é a referência FIXA —
-## subtraímos o offset da base de TODOS os pontos, garantindo que
-## ela nunca se mova. A diferença entre horizonte e base (curvatura
-## local) é o que cria a curva visível.
+## Redesenha as duas Line2D usando BEZIER CÚBICA (4 pontos de
+## controle por borda) — uma única curva suave de t=0 (horizonte)
+## a t=1 (base), sem junções internas, sem quinas. P0 e P3 sempre
+## centrados em center_x. P1 recebe o offset completo de
+## curve_amount; P2 recebe offset reduzido (30%) para evitar
+## overshoot perto da base — garante monotonicidade (left sempre
+## decresce, right sempre cresce, sem cruzamento, sem ondulação).
 func _redraw_road_edges() -> void:
-	var smoothed: Array[float] = _smooth_array(model.offsets)
-	smoothed = _smooth_array(smoothed)  # segunda passada
-	var base_offset: float = smoothed[model.point_count - 1]
+	var half_top: float = model.road_top_width / 2.0
+	var half_bottom: float = model.road_bottom_width / 2.0
+	var mid_offset: float = model.curve_amount * model.max_curve_offset
 
-	## 📌 DEBUG TEMPORÁRIO — remover depois
-	if Engine.get_process_frames() % 30 == 0:
-		var raw_curvature: float = model.offsets[0] - model.offsets[model.point_count - 1]
-		var smoothed_curvature: float = smoothed[0] - base_offset
-		print("RAW=%.3f SMOOTHED=%.3f | L0=%s R0=%s | L79=%s R79=%s" % [
-			raw_curvature,
-			smoothed_curvature,
-			road_edge_left.get_point_position(0),
-			road_edge_right.get_point_position(0),
-			road_edge_left.get_point_position(model.point_count - 1),
-			road_edge_right.get_point_position(model.point_count - 1)
-		])
+	var p0_left: float = model.center_x - half_top
+	var p3_left: float = model.center_x - half_bottom
+	var p1_left: float = p0_left + (p3_left - p0_left) * 0.33 + mid_offset
+	var p2_left: float = p0_left + (p3_left - p0_left) * 0.67 + mid_offset * 0.3
+
+	var p0_right: float = model.center_x + half_top
+	var p3_right: float = model.center_x + half_bottom
+	var p1_right: float = p0_right + (p3_right - p0_right) * 0.33 + mid_offset
+	var p2_right: float = p0_right + (p3_right - p0_right) * 0.67 + mid_offset * 0.3
 
 	for i in model.point_count:
 		var t: float = float(i) / float(model.point_count - 1)
-		var perspective: float = pow(t, 1.5)
 		var y: float = lerp(model.horizon_y, model.base_y, t)
-		var half_width: float = lerp(
-			model.road_top_width / 2.0,
-			model.road_bottom_width / 2.0,
-			perspective)
-		var offset: float = smoothed[i] - base_offset
-		road_edge_left.set_point_position(i,
-			Vector2(model.center_x - half_width + offset, y))
-		road_edge_right.set_point_position(i,
-			Vector2(model.center_x + half_width + offset, y))
+
+		var left_x: float = _bezier(p0_left, p1_left, p2_left, p3_left, t)
+		var right_x: float = _bezier(p0_right, p1_right, p2_right, p3_right, t)
+
+		road_edge_left.set_point_position(i, Vector2(left_x, y))
+		road_edge_right.set_point_position(i, Vector2(right_x, y))
+
+## 📌
+## Bezier cúbica: B(t) = (1-t)³P0 + 3(1-t)²t·P1 + 3(1-t)t²·P2 + t³P3
+func _bezier(p0: float, p1: float, p2: float, p3: float, t: float) -> float:
+	var u: float = 1.0 - t
+	return u*u*u*p0 + 3.0*u*u*t*p1 + 3.0*u*t*t*p2 + t*t*t*p3
 
 ## 📌
 ## Céu: movimento horizontal constante via autoscroll (configurado
 ## uma vez no _ready(), não precisa ser tocado aqui).
-## Cidade: desloca conforme a curvatura local — usa scroll_offset
-## do Parallax2D.
+## Cidade: desloca conforme curve_amount — usa scroll_offset do Parallax2D.
 func _apply_curve_offset() -> void:
-	var local_curvature: float = model.offsets[0] - model.offsets[model.point_count - 1]
-	city.scroll_offset.x = local_curvature
+	city.scroll_offset.x = model.curve_amount * model.max_curve_offset * 0.5
 
 ## 📌
 ## Define a cor do fundo climático (dia, tarde, neblina, neve)
