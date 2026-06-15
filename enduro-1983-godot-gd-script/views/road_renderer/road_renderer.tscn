@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://chda4oijx77db"]
+
+[ext_resource type="Script" uid="uid://bp2appis6y6p4" path="res://core/controllers/road_renderer.gd" id="1_810wp"]
+
+[node name="RoadRenderer" type="Node2D"]
+script = ExtResource("1_810wp")

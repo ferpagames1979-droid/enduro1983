@@ -1,0 +1,46 @@
+[gd_scene load_steps=4 format=3 uid="uid://d1udyg7m1aexm"]
+
+[ext_resource type="Texture2D" uid="uid://dgj70w618xp7b" path="res://assets/textures/clouds.png" id="1_mr5mm"]
+[ext_resource type="Script" uid="uid://bp52b1m24fvl6" path="res://core/controllers/pista_base_view_controller.gd" id="1_shmh3"]
+[ext_resource type="Texture2D" uid="uid://djs7hhmp4heo8" path="res://assets/textures/city.png" id="2_i1k0s"]
+
+[node name="PistaBaseView" type="ColorRect"]
+z_index = -100
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.5411765, 0.5411765, 0.5411765, 1)
+script = ExtResource("1_shmh3")
+
+[node name="Clouds" type="Parallax2D" parent="."]
+unique_name_in_owner = true
+repeat_size = Vector2(500, 0)
+repeat_times = 2
+
+[node name="CloudsSprite" type="Sprite2D" parent="Clouds"]
+unique_name_in_owner = true
+position = Vector2(576, 0)
+texture = ExtResource("1_mr5mm")
+
+[node name="City" type="Parallax2D" parent="."]
+unique_name_in_owner = true
+repeat_size = Vector2(1000, 0)
+repeat_times = 2
+
+[node name="CitySprite" type="Sprite2D" parent="City"]
+unique_name_in_owner = true
+position = Vector2(586, 100)
+texture = ExtResource("2_i1k0s")
+
+[node name="RoadEdgeLeft" type="Line2D" parent="."]
+unique_name_in_owner = true
+z_index = -5
+points = PackedVector2Array(159, 203)
+width = 1.5
+
+[node name="RoadEdgeRight" type="Line2D" parent="."]
+unique_name_in_owner = true
+z_index = -5
+width = 1.5
