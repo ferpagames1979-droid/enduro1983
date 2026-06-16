@@ -51,13 +51,13 @@ var curve_batch_size: int = 8
 
 ## Duração de RETAS (em ticks). Com tick_interval=0.03s,
 ## 166-333 ticks = ~5s a 10s
-var straight_duration_min: int = 166
-var straight_duration_max: int = 333
+var straight_duration_min: int = 200
+var straight_duration_max: int = 400
 
 ## Duração de CURVAS (em ticks). Com tick_interval=0.03s,
 ## 1000-2000 ticks = ~30s a 60s — curvas longas, como uma rodovia real
-var curve_duration_min: int = 1000
-var curve_duration_max: int = 2000
+var curve_duration_min: int = 200
+var curve_duration_max: int = 400
 
 ## Ticks restantes do segmento atual (consumido tick a tick)
 var ticks_remaining: int = 0

@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://d1udyg7m1aexm"]
+[gd_scene load_steps=5 format=3 uid="uid://d1udyg7m1aexm"]
 
 [ext_resource type="Texture2D" uid="uid://dgj70w618xp7b" path="res://assets/textures/clouds.png" id="1_mr5mm"]
 [ext_resource type="Script" uid="uid://bp52b1m24fvl6" path="res://core/controllers/pista_base_view_controller.gd" id="1_shmh3"]
 [ext_resource type="Texture2D" uid="uid://b57pahlxeed6t" path="res://assets/textures/montanha_seamless.webp" id="3_i1k0s"]
+[ext_resource type="Texture2D" uid="uid://bude1rvu8d6km" path="res://assets/textures/pista_tracejado.webp" id="4_shmh3"]
 
 [node name="PistaBaseView" type="ColorRect"]
 z_index = -100
@@ -40,9 +41,13 @@ texture = ExtResource("3_i1k0s")
 unique_name_in_owner = true
 z_index = -5
 points = PackedVector2Array(159, 203)
-width = 1.5
+width = 2.0
+texture = ExtResource("4_shmh3")
+texture_mode = 1
 
 [node name="RoadEdgeRight" type="Line2D" parent="."]
 unique_name_in_owner = true
 z_index = -5
-width = 1.5
+width = 2.0
+texture = ExtResource("4_shmh3")
+texture_mode = 1

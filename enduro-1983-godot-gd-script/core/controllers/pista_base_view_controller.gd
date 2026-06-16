@@ -40,6 +40,10 @@ var _current_speed: float = 200.0
 ## quando um novo segmento é consumido da fila
 var _current_segment_direction: int = 0
 
+## Acumula o offset da textura — animado proporcional à
+## velocidade atual do carro para dar sensação de movimento
+var _texture_offset: float = 0.0
+
 ## 📌
 func _ready() -> void:
 	model = PistaBaseModel.new()
@@ -57,10 +61,11 @@ func _ready() -> void:
 	road_edge_right.width = 2.0
 
 	# Céu: movimento horizontal constante, independente da curva
-	clouds.autoscroll = Vector2(-8.0, 0.0)
+	clouds.autoscroll = Vector2(-3.0, 0.0)
 
 	_setup_road_points()
 	_fill_curve_queue()
+	_setup_road_dash()
 
 ## 📌
 ## Cria os pontos iniciais — pista reta (curve_amount = 0).
@@ -99,9 +104,33 @@ func _process(delta: float) -> void:
 	_advance_tick_timer(delta)
 	_redraw_road_edges()
 	_apply_curve_offset()
+	_animate_road_dash(delta)
 
 	SignalBus.PistaBaseViewControllerSignal_road_offset_changed.emit(
 		model.curve_amount)
+		
+func _setup_road_dash() -> void:
+	var shader: Shader = load("res://assets/shaders/pista_base_view_ROAD_DASH.gdshader")
+
+	var mat_left: ShaderMaterial = ShaderMaterial.new()
+	mat_left.shader = shader
+	road_edge_left.material = mat_left
+
+	var mat_right: ShaderMaterial = ShaderMaterial.new()
+	mat_right.shader = shader
+	road_edge_right.material = mat_right
+		
+## 📌
+## Anima o tracejado das bordas da pista movendo texture_offset.y
+## proporcional à velocidade atual — quanto mais rápido o carro,
+## mais rápido o traço "corre" para baixo, dando sensação de
+## movimento/velocidade
+func _animate_road_dash(delta: float) -> void:
+	_texture_offset = fmod(
+					_texture_offset + _current_speed * delta * 0.001, 1.0)
+
+	road_edge_left.material.set_shader_parameter("offset", _texture_offset)
+	road_edge_right.material.set_shader_parameter("offset", _texture_offset)
 
 ## 📌
 ## Recebe a velocidade atual do carro via SignalBus
