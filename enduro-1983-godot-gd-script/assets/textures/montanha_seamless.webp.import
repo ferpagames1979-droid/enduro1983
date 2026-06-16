@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c761y8g8kh0im"
-path="res://.godot/imported/road.png-d477774f72907c6d431b3440dca2d9fc.ctex"
+uid="uid://b57pahlxeed6t"
+path="res://.godot/imported/montanha_seamless.webp-2566717e25c392b6c9e7a6fa1def4686.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/textures/road.png"
-dest_files=["res://.godot/imported/road.png-d477774f72907c6d431b3440dca2d9fc.ctex"]
+source_file="res://assets/textures/montanha_seamless.webp"
+dest_files=["res://.godot/imported/montanha_seamless.webp-2566717e25c392b6c9e7a6fa1def4686.ctex"]
 
 [params]
 
