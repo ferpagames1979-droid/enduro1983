@@ -1,3 +1,27 @@
+## =================================================
+## CLASS: PistaBaseViewController
+## DESCRIPTION: Controls the road curve system with a
+## perspective trapezoid (thin at horizon, wide at
+## base). The root node IS the climate background
+## (ColorRect). Draws two Line2D (left/right edges).
+##
+## v4.2 — CUBIC BEZIER + ROAD DASH:
+## Each edge is a single cubic Bezier curve (4 control
+## points: P0=horizon, P1, P2, P3=base). P0 and P3 are
+## always centered on center_x. P1 receives the full
+## curve_amount offset; P2 receives an attenuated 0.3x
+## offset — smooth, monotonic, no kinks.
+## Road edges use a ShaderMaterial (road_dash.gdshader)
+## with animated UV offset proportional to car speed,
+## giving a dashed-line movement effect.
+## curve_amount eases (lerp) toward a target defined by
+## curve_queue (-1/0/1).
+## Sky (clouds) scrolls at constant speed via autoscroll;
+## city reacts to the curve via scroll_offset.
+## Emits curve_amount via SignalBus.
+## AUTHOR: Ferpa Games
+## VERSION: 4.2.0
+## =================================================
 class_name PistaBaseViewController
 extends ColorRect
 
@@ -5,20 +29,27 @@ const CLASS_NAME_LOG: String = "PistaBaseViewController"
 
 var model: PistaBaseModel
 
+## Bordas esquerda e direita da pista — Line2D com ShaderMaterial
+## de tracejado animado (road_dash.gdshader)
 @onready var road_edge_left: Line2D = %RoadEdgeLeft
 @onready var road_edge_right: Line2D = %RoadEdgeRight
+
+## Parallax2D do céu — scroll constante via autoscroll, independente da curva
 @onready var clouds: Parallax2D = %Clouds
+
+## Parallax2D da cidade — scroll_offset.x reage ao curve_amount
 @onready var city: Parallax2D = %City
 
-
+## Velocidade atual do carro — recebida via SignalBus.
+## Usada para acelerar o tick da pista e o tracejado animado
 var _current_speed: float = 200.0
 
-## Direção do segmento atual (-1, 0, 1) — atualizada apenas
-## quando um novo segmento é consumido da fila
+## Direção do segmento atual (-1=esquerda, 0=reta, 1=direita) —
+## atualizada apenas quando um novo segmento é consumido da fila
 var _current_segment_direction: int = 0
 
-## Acumula o offset da textura — animado proporcional à
-## velocidade atual do carro para dar sensação de movimento
+## Acumula o offset UV do shader de tracejado — animado proporcional
+## à velocidade atual do carro para dar sensação de movimento
 var _texture_offset: float = 0.0
 
 ## 📌
@@ -57,9 +88,9 @@ func _setup_road_points() -> void:
 
 ## 📌
 ## Sorteia um lote de segmentos. RETAS (direção 0) são mais curtas
-## (5-10s); CURVAS (direção ±1) são mais longas (30-60s) — fiel
-## ao feeling de uma rodovia real (retas curtas, curvas longas).
-## Garante pelo menos a metade dos segmentos sendo curva, para
+## (~6-12s); CURVAS (direção ±1) são mais longas (~6-12s também,
+## conforme calibragem atual do model) — fiel ao feeling do Enduro.
+## Garante pelo menos metade dos segmentos sendo curva, para
 ## evitar longas sequências de retas por acaso estatístico.
 func _fill_curve_queue() -> void:
 	var directions: Array[int] = []
@@ -85,9 +116,14 @@ func _process(delta: float) -> void:
 
 	SignalBus.PistaBaseViewControllerSignal_road_offset_changed.emit(
 		model.curve_amount)
-		
+
+## 📌
+## Aplica o ShaderMaterial de tracejado animado nas duas bordas.
+## Shader: res://assets/shaders/pista_base_view_ROAD_DASH.gdshader
+## O offset UV é animado em _animate_road_dash() a cada frame.
 func _setup_road_dash() -> void:
-	var shader: Shader = load("res://assets/shaders/pista_base_view_ROAD_DASH.gdshader")
+	var shader: Shader = load(
+		"res://assets/shaders/pista_base_view_ROAD_DASH.gdshader")
 
 	var mat_left: ShaderMaterial = ShaderMaterial.new()
 	mat_left.shader = shader
@@ -96,28 +132,28 @@ func _setup_road_dash() -> void:
 	var mat_right: ShaderMaterial = ShaderMaterial.new()
 	mat_right.shader = shader
 	road_edge_right.material = mat_right
-		
+
 ## 📌
-## Anima o tracejado das bordas da pista movendo texture_offset.y
+## Anima o tracejado das bordas movendo o UV offset do shader
 ## proporcional à velocidade atual — quanto mais rápido o carro,
 ## mais rápido o traço "corre" para baixo, dando sensação de
 ## movimento/velocidade
 func _animate_road_dash(delta: float) -> void:
 	_texture_offset = fmod(
-					_texture_offset + _current_speed * delta * 0.001, 1.0)
+		_texture_offset + _current_speed * delta * 0.001, 1.0)
 
 	road_edge_left.material.set_shader_parameter("offset", _texture_offset)
 	road_edge_right.material.set_shader_parameter("offset", _texture_offset)
 
 ## 📌
-## Recebe a velocidade atual do carro via SignalBus
+## Recebe a velocidade atual do carro via SignalBus.
+## Emitido por CarPlayerViewController ao acelerar/frear
 func _on_speed_changed(speed: float) -> void:
 	_current_speed = speed
 
 ## 📌
-## Avança o timer do tick. Como tick_interval é bem pequeno (0.03s),
-## usa um while para garantir que múltiplos ticks ocorram no mesmo
-## frame se o delta for maior que o intervalo
+## Avança o timer do tick proporcional à velocidade do carro.
+## Usa while para garantir múltiplos ticks em frames com delta alto
 func _advance_tick_timer(delta: float) -> void:
 	var speed_bonus: float = _current_speed * model.speed_tick_factor
 	model.tick_timer += delta * (1.0 + speed_bonus)
@@ -194,14 +230,13 @@ func _bezier(p0: float, p1: float, p2: float, p3: float, t: float) -> float:
 	return u*u*u*p0 + 3.0*u*u*t*p1 + 3.0*u*t*t*p2 + t*t*t*p3
 
 ## 📌
-## Céu: movimento horizontal constante via autoscroll (configurado
-## uma vez no _ready(), não precisa ser tocado aqui).
-## Cidade: desloca conforme curve_amount — usa scroll_offset do Parallax2D.
+## Céu: scroll constante via autoscroll (configurado no _ready()).
+## Cidade: desloca conforme curve_amount — scroll_offset do Parallax2D
 func _apply_curve_offset() -> void:
 	city.scroll_offset.x = model.curve_amount * model.max_curve_offset * 0.5
 
 ## 📌
-## Define a cor do fundo climático (dia, tarde, neblina, neve)
+## Define a cor do fundo climático (dia, tarde, neblina, neve).
 ## Chamado pelo DayManager nos EP08/EP09
 func set_climate_color(climate_color: Color) -> void:
 	color = climate_color
