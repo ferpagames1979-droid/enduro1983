@@ -1,71 +1,96 @@
-[gd_scene load_steps=3 format=3 uid="uid://hcjmdfudr235"]
+[gd_scene load_steps=5 format=3 uid="uid://cmbt7pkud4bn1"]
 
 [ext_resource type="Script" uid="uid://ctcq3crpwob3x" path="res://core/controllers/hud_view_controller.gd" id="1_q0a3o"]
-[ext_resource type="PackedScene" uid="uid://21me7sbhoq7q" path="res://views/odometer_container/odometer_container.tscn" id="2_ub3yw"]
+[ext_resource type="PackedScene" uid="uid://cx6hfrah1jw42" path="res://views/odometer_view/odometer_view.tscn" id="2_ub3yw"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_c8hnl"]
+bg_color = Color(1, 0.6, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_q0a3o"]
+font_size = 32
+font_color = Color(0, 0, 0, 1)
 
 [node name="HUDView" type="CanvasLayer"]
 script = ExtResource("1_q0a3o")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
-anchors_preset = 7
-anchor_left = 0.5
+anchors_preset = 12
 anchor_top = 1.0
-anchor_right = 0.5
+anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -20.0
-offset_top = -40.0
-offset_right = 20.0
 grow_horizontal = 2
 grow_vertical = 0
-theme_override_constants/margin_bottom = 10
 
 [node name="ColorRect" type="ColorRect" parent="MarginContainer"]
-custom_minimum_size = Vector2(400, 80)
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+color = Color(0, 0, 0, 1)
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="ColorRect" type="ColorRect" parent="MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(500, 0)
 layout_mode = 2
 color = Color(1, 0, 0, 1)
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/ColorRect"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 50
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer/ColorRect/MarginContainer"]
 layout_mode = 2
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+[node name="HBoxDistance" type="HBoxContainer" parent="MarginContainer/HBoxContainer/ColorRect/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
+size_flags_horizontal = 4
 
-[node name="DistanceLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer2"]
+[node name="DistanceLabel" type="Label" parent="MarginContainer/HBoxContainer/ColorRect/MarginContainer/VBoxContainer/HBoxDistance"]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_horizontal = 10
+size_flags_horizontal = 3
+theme_override_styles/normal = SubResource("StyleBoxFlat_c8hnl")
 text = "0000"
+label_settings = SubResource("LabelSettings_q0a3o")
 horizontal_alignment = 2
 
-[node name="OdometerContainer" parent="MarginContainer/VBoxContainer/HBoxContainer2" instance=ExtResource("2_ub3yw")]
+[node name="OdometerView" parent="MarginContainer/HBoxContainer/ColorRect/MarginContainer/VBoxContainer/HBoxDistance" instance=ExtResource("2_ub3yw")]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_horizontal = 10
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+[node name="HBoxTrofeuECarros" type="HBoxContainer" parent="MarginContainer/HBoxContainer/ColorRect/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="DaysCompleteLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="DaysCompleteLabel" type="Label" parent="MarginContainer/HBoxContainer/ColorRect/MarginContainer/VBoxContainer/HBoxTrofeuECarros"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "TROFEU"
+size_flags_horizontal = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_c8hnl")
+text = "00000"
+label_settings = SubResource("LabelSettings_q0a3o")
+horizontal_alignment = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="CarsRemainingLabel" type="Label" parent="MarginContainer/HBoxContainer/ColorRect/MarginContainer/VBoxContainer/HBoxTrofeuECarros"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 size_flags_horizontal = 3
-
-[node name="CarrinhoTexture" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 6
-text = "CARRINHO"
-
-[node name="CarsRemainingLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 6
-text = "200"
+theme_override_styles/normal = SubResource("StyleBoxFlat_c8hnl")
+text = "00000"
+label_settings = SubResource("LabelSettings_q0a3o")
+horizontal_alignment = 2
 
 [node name="OdometerTimer" type="Timer" parent="."]
 unique_name_in_owner = true

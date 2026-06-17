@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://ca24fagfwmt32" path="res://core/controllers/game_view_controller.gd" id="1_vbs4l"]
 [ext_resource type="PackedScene" uid="uid://d0fe3ovbsdrog" path="res://views/car_player_view/car_player_view.tscn" id="2_wvyay"]
 [ext_resource type="PackedScene" uid="uid://37dau1bwgf47" path="res://views/pista_base_view/pista_base_view.tscn" id="3_wvyay"]
-[ext_resource type="PackedScene" uid="uid://hcjmdfudr235" path="res://views/hud_view/hud_view.tscn" id="4_msdcn"]
+[ext_resource type="PackedScene" uid="uid://cmbt7pkud4bn1" path="res://views/hud_view/hud_view.tscn" id="4_msdcn"]
 
 [node name="GameView" type="Node2D"]
 script = ExtResource("1_vbs4l")
@@ -13,6 +13,7 @@ unique_name_in_owner = true
 
 [node name="CarPlayerView" parent="." instance=ExtResource("2_wvyay")]
 unique_name_in_owner = true
-position = Vector2(579, 532)
+position = Vector2(582, 504)
 
 [node name="HUDView" parent="." instance=ExtResource("4_msdcn")]
+unique_name_in_owner = true
