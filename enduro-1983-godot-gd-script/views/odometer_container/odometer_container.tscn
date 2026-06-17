@@ -1,0 +1,26 @@
+[gd_scene load_steps=3 format=3 uid="uid://21me7sbhoq7q"]
+
+[ext_resource type="Texture2D" uid="uid://cu7majd6tqim" path="res://assets/sprites/odometer.webp" id="1_bv7nx"]
+[ext_resource type="Script" uid="uid://cxsxjifxrp3wo" path="res://views/odometer_container/odometer_container.gd" id="1_vfdri"]
+
+[node name="OdometerContainer" type="Control"]
+clip_contents = true
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -1102.0
+offset_bottom = -598.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_vfdri")
+
+[node name="OdometerStrip" type="TextureRect" parent="."]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(50, 500)
+layout_mode = 0
+offset_right = 4.0
+offset_bottom = 40.0
+texture = ExtResource("1_bv7nx")
+stretch_mode = 2

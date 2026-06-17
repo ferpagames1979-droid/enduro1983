@@ -87,7 +87,8 @@ var tick_timer: float = 0.0
 var speed_tick_factor: float = 0.002
 
 ## --- Cores climáticas (usadas a partir do EP08/EP09) ---
-var color_day: Color = Color.LIGHT_GRAY
+var color_day: Color = Color.LIGHT_GOLDENROD
+var color_night: Color = Color.DARK_BLUE
 var color_dusk: Color = Color.CORAL
-var color_fog: Color = Color.DIM_GRAY
+var color_fog : Color = Color.DIM_GRAY
 var color_snow: Color = Color.WHITE_SMOKE
