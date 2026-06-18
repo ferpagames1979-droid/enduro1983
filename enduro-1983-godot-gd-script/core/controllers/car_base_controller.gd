@@ -30,7 +30,9 @@ func _ready() -> void:
 	_on_ready()
 
 func _on_ready() -> void:
-	pass
+	PrintLogManager.printlog(CLASS_NAME_LOG,
+							 PrintLogManager.LogType.WARNING,
+							"ABSTRACT METHOD _on_ready()")
 
 func _process(delta: float) -> void:
 	if model.is_crashed:
@@ -42,7 +44,7 @@ func _process(delta: float) -> void:
 func _handle_movement(_delta : float) -> void:
 	PrintLogManager.printlog(CLASS_NAME_LOG,
 							 PrintLogManager.LogType.WARNING,
-							" _handle_movement")
+							"ABSTRACT METHOD _handle_movement")
 
 ## Clamp simples — limites FIXOS, a base da pista nunca se move
 func _clamp_position() -> void:

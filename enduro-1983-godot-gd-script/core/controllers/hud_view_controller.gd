@@ -113,7 +113,7 @@ func _on_speed_changed(new_speed: float) -> void:
 ## 📌
 ## Formata a distância como odômetro zero-padded (ex: 970 → "00970")
 func _update_distance_label() -> void:
-	distance_label.text = "%05d" % model.distance
+	distance_label.text = "%04d" % model.distance
 
 ## 📌
 ## Exibe os dias completados (ex: "6")

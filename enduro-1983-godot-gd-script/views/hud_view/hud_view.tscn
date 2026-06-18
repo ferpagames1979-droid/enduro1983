@@ -76,9 +76,9 @@ size_flags_vertical = 3
 [node name="DaysCompleteLabel" type="Label" parent="MarginContainer/HBoxContainer/ColorRect/MarginContainer/VBoxContainer/HBoxTrofeuECarros"]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_horizontal = 2
+size_flags_horizontal = 3
 theme_override_styles/normal = SubResource("StyleBoxFlat_c8hnl")
-text = "00000"
+text = "0"
 label_settings = SubResource("LabelSettings_q0a3o")
 horizontal_alignment = 2
 
