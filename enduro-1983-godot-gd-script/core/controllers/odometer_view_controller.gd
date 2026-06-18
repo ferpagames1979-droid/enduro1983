@@ -61,6 +61,6 @@ func advance() -> bool:
 		completed_cycle = true
 	else:
 		tween.tween_property(odometer_strip, "position:y",
-			target_y, 0.1)
+			target_y, 0.12)
 
 	return completed_cycle
