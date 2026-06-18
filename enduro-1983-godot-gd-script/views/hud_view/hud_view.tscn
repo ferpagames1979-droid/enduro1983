@@ -1,12 +1,14 @@
-[gd_scene load_steps=5 format=3 uid="uid://cmbt7pkud4bn1"]
+[gd_scene load_steps=6 format=3 uid="uid://cmbt7pkud4bn1"]
 
 [ext_resource type="Script" uid="uid://ctcq3crpwob3x" path="res://core/controllers/hud_view_controller.gd" id="1_q0a3o"]
 [ext_resource type="PackedScene" uid="uid://cx6hfrah1jw42" path="res://views/odometer_view/odometer_view.tscn" id="2_ub3yw"]
+[ext_resource type="FontFile" uid="uid://cjni30rofifjd" path="res://assets/fonts/noto_emoji/NotoEmoji-Bold.ttf" id="2_ujfa2"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_c8hnl"]
 bg_color = Color(1, 0.6, 0, 1)
 
 [sub_resource type="LabelSettings" id="LabelSettings_q0a3o"]
+font = ExtResource("2_ujfa2")
 font_size = 32
 font_color = Color(0, 0, 0, 1)
 
@@ -57,12 +59,14 @@ size_flags_horizontal = 4
 
 [node name="DistanceLabel" type="Label" parent="MarginContainer/HBoxContainer/ColorRect/MarginContainer/VBoxContainer/HBoxDistance"]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/normal = SubResource("StyleBoxFlat_c8hnl")
 text = "0000"
 label_settings = SubResource("LabelSettings_q0a3o")
 horizontal_alignment = 2
+vertical_alignment = 1
 
 [node name="OdometerView" parent="MarginContainer/HBoxContainer/ColorRect/MarginContainer/VBoxContainer/HBoxDistance" instance=ExtResource("2_ub3yw")]
 unique_name_in_owner = true
@@ -81,6 +85,7 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_c8hnl")
 text = "0"
 label_settings = SubResource("LabelSettings_q0a3o")
 horizontal_alignment = 2
+vertical_alignment = 1
 
 [node name="CarsRemainingLabel" type="Label" parent="MarginContainer/HBoxContainer/ColorRect/MarginContainer/VBoxContainer/HBoxTrofeuECarros"]
 unique_name_in_owner = true
@@ -91,6 +96,7 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_c8hnl")
 text = "00000"
 label_settings = SubResource("LabelSettings_q0a3o")
 horizontal_alignment = 2
+vertical_alignment = 1
 
 [node name="OdometerTimer" type="Timer" parent="."]
 unique_name_in_owner = true

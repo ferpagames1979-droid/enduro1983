@@ -118,12 +118,12 @@ func _update_distance_label() -> void:
 ## 📌
 ## Exibe os dias completados (ex: "6")
 func _update_days_completed_label() -> void:
-	days_complete_label.text = str(model.days_completed)
+	days_complete_label.text = "🏆%d" % model.days_completed
 
 ## 📌
 ## Exibe o contador decrescente de carros restantes (ex: "208")
 func _update_cars_remaining_label() -> void:
-	cars_remaining_label.text = "%d" % model.cars_remaining
+	cars_remaining_label.text = "🚗%d" % model.cars_remaining
 
 ## 📌
 ## Dispara o avanço do odômetro a cada tick do OdometerTimer
