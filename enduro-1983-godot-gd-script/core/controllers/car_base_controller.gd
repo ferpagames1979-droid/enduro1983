@@ -1,21 +1,38 @@
+## =================================================
+## CLASS: CarBaseController
+## DESCRIPTION: Base class for all cars (player and IA).
+## Handles shared initialization (model, clamp limits,
+## sprite setup, headlights) and defines abstract methods
+## _on_ready() and _handle_movement() to be overridden
+## by child classes.
+##
+## _process() always calls _handle_movement() — each
+## child is responsible for checking model.is_crashed
+## internally (e.g. CarPlayerViewController blocks input
+## and counts down crash_timer while crashed).
+## AUTHOR: Ferpa Games
+## VERSION: 1.1.0
+## =================================================
 class_name CarBaseController
 extends AnimatedSprite2D
-const CLASS_NAME_LOG = "CarBaseController"
+
+const CLASS_NAME_LOG: String = "CarBaseController"
+
 enum CarType { PLAYER, IA }
-var car_type : CarType = CarType.PLAYER
-var model : CarModel
+
+var car_type: CarType = CarType.PLAYER
+var model: CarModel
+
 @onready var head_lights: Sprite2D = %HeadLights
 
+## 📌
 func _ready() -> void:
 	PrintLogManager.printlog(CLASS_NAME_LOG,
-							PrintLogManager.LogType.INFO,
-							" _ready()")
+		PrintLogManager.LogType.INFO,
+		" _ready()")
 	model = CarModel.new()
 
-	# Limites FIXOS baseados na largura da BASE do trapézio (800px),
-	# centrada em 576 — a base da pista nunca se move (offset = 0
-	# sempre, por design do PistaBaseViewController)
-	const ROAD_BOTTOM_HALF_WIDTH: float = 400.0  # road_bottom_width / 2
+	const ROAD_BOTTOM_HALF_WIDTH: float = 400.0
 	const ROAD_CENTER_X: float = 576.0
 
 	var car_half_width: float = (sprite_frames.get_frame_texture("default", 0)
@@ -29,30 +46,35 @@ func _ready() -> void:
 	play("default")
 	_on_ready()
 
+## 📌
 func _on_ready() -> void:
 	PrintLogManager.printlog(CLASS_NAME_LOG,
-							 PrintLogManager.LogType.WARNING,
-							"ABSTRACT METHOD _on_ready()")
+		PrintLogManager.LogType.WARNING,
+		"ABSTRACT METHOD _on_ready()")
 
+## 📌
+## NOTA: não há mais early-return em is_crashed aqui —
+## cada child decide o que fazer quando crashado dentro
+## do seu próprio _handle_movement() (ver CarPlayerViewController)
 func _process(delta: float) -> void:
-	if model.is_crashed:
-		return
 	_handle_movement(delta)
 	_clamp_position()
 
-## abstract method needs to be implement on child class
-func _handle_movement(_delta : float) -> void:
+## 📌
+func _handle_movement(_delta: float) -> void:
 	PrintLogManager.printlog(CLASS_NAME_LOG,
-							 PrintLogManager.LogType.WARNING,
-							"ABSTRACT METHOD _handle_movement")
+		PrintLogManager.LogType.WARNING,
+		"ABSTRACT METHOD _handle_movement")
 
-## Clamp simples — limites FIXOS, a base da pista nunca se move
+## 📌
 func _clamp_position() -> void:
 	position.x = clamp(position.x, model.min_x, model.max_x)
 	model.lane_x = position.x
 
-func set_car_color(color:Color) -> void:
-	self_modulate = color
+## 📌
+func set_car_color(car_color: Color) -> void:
+	self_modulate = car_color
 
-func set_night_mode(is_night : bool) -> void:
+## 📌
+func set_night_mode(is_night: bool) -> void:
 	head_lights.visible = is_night

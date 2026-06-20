@@ -1,0 +1,8 @@
+[gd_scene load_steps=3 format=3 uid="uid://bpbix7vj1e5x2"]
+
+[ext_resource type="Script" uid="uid://dyqv0fwmh48ej" path="res://core/managers/CarIaPoolManager.gd" id="1_a5rn5"]
+[ext_resource type="PackedScene" uid="uid://ywj742yon71p" path="res://views/car_ia_view/car_ia_view.tscn" id="2_d54d1"]
+
+[node name="CarIaPoolView" type="Node2D"]
+script = ExtResource("1_a5rn5")
+ia_scene = ExtResource("2_d54d1")

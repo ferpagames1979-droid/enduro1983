@@ -11,3 +11,6 @@ signal PistaBaseViewControllerSignal_road_offset_changed(offset: float)
 signal HudViewControllerSignal_distance_changed(new_distance: int)
 signal HudViewControllerSignal_days_completed_changed(new_day : int)
 signal HudViewControllerSignal_cars_remaining_changed(new_car : int)
+
+## CarIaPoolManager
+signal CarIaPoolManagerSignal_car_passed()

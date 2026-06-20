@@ -240,3 +240,29 @@ func _apply_curve_offset() -> void:
 ## Chamado pelo DayManager nos EP08/EP09
 func set_climate_color(climate_color: Color) -> void:
 	color = climate_color
+	
+	
+func get_center_x_at(t: float) -> float:
+	var half_top: float = model.road_top_width / 2.0
+	var half_bottom: float = model.road_bottom_width / 2.0
+	var mid_offset: float = model.curve_amount * model.max_curve_offset
+
+	var p0_left: float = model.center_x - half_top
+	var p3_left: float = model.center_x - half_bottom
+	var p1_left: float = p0_left + (p3_left - p0_left) * 0.33 + mid_offset
+	var p2_left: float = p0_left + (p3_left - p0_left) * 0.67 + mid_offset * 0.3
+
+	var p0_right: float = model.center_x + half_top
+	var p3_right: float = model.center_x + half_bottom
+	var p1_right: float = p0_right + (p3_right - p0_right) * 0.33 + mid_offset
+	var p2_right: float = p0_right + (p3_right - p0_right) * 0.67 + mid_offset * 0.3
+
+	var left_x: float = _bezier(p0_left, p1_left, p2_left, p3_left, t)
+	var right_x: float = _bezier(p0_right, p1_right, p2_right, p3_right, t)
+
+	return (left_x + right_x) / 2.0
+	
+func get_half_width_at(t: float) -> float:
+	var half_top: float = model.road_top_width / 2.0
+	var half_bottom: float = model.road_bottom_width / 2.0
+	return lerp(half_top, half_bottom, t)
