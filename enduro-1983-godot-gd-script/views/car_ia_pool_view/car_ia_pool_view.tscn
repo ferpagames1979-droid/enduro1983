@@ -1,4 +1,4 @@
-[gd_scene load_steps=3 format=3 uid="uid://bpbix7vj1e5x2"]
+[gd_scene load_steps=3 format=3 uid="uid://d4hqaql173v6u"]
 
 [ext_resource type="Script" uid="uid://dyqv0fwmh48ej" path="res://core/managers/CarIaPoolManager.gd" id="1_a5rn5"]
 [ext_resource type="PackedScene" uid="uid://ywj742yon71p" path="res://views/car_ia_view/car_ia_view.tscn" id="2_d54d1"]

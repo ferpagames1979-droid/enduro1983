@@ -74,7 +74,7 @@ var _current_player_speed: float = 200.0
 
 ## Pré-popula o pool com MAX_IA_CARS instâncias inativas no
 ## início do jogo, evitando instantiate()/free() em runtime
-func _ready() -> void:
+func _ready() -> void:	
 	PrintLogManager.printlog(CLASS_NAME_LOG,
 		PrintLogManager.LogType.INFO,
 		"_ready()")
