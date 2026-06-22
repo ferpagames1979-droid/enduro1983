@@ -34,3 +34,7 @@ var base_y: float = 600.0
 
 var scale_min: float = 0.1
 var scale_max: float = 1.0
+
+var passed_player: bool = false
+
+var was_hit: bool = false

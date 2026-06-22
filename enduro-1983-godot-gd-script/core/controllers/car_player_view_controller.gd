@@ -87,6 +87,10 @@ func set_night_mode(_is_night: bool) -> void:
 func _on_area_entered(area: Area2D) -> void:
 	if model.is_crashed:
 		return
+	## Empurra a IA para o lado antes de acionar o crash
+	var ia: CarIaViewController = area.get_parent() as CarIaViewController
+	if ia != null:
+		ia.push_away(position.x)
 	trigger_crash()
 	PrintLogManager.printlog(CLASS_NAME_LOG_CHILD,
 		PrintLogManager.LogType.INFO,

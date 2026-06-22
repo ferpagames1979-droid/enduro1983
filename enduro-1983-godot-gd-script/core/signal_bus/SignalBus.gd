@@ -13,4 +13,4 @@ signal HudViewControllerSignal_days_completed_changed(new_day : int)
 signal HudViewControllerSignal_cars_remaining_changed(new_car : int)
 
 ## CarIaPoolManager
-signal CarIaPoolManagerSignal_car_passed()
+signal CarIaPoolManagerSignal_car_passed

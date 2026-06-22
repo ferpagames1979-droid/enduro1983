@@ -72,6 +72,10 @@ var _spawn_timer: float = 0.0
 ## Velocidade atual do player — recebida via SignalBus
 var _current_player_speed: float = 200.0
 
+## Referência ao player — setada pelo GameViewController._ready().
+## Usada para detectar ultrapassagem (ia.position.y >= player.position.y)
+var _player_ref : CarPlayerViewController = null
+
 ## Pré-popula o pool com MAX_IA_CARS instâncias inativas no
 ## início do jogo, evitando instantiate()/free() em runtime
 func _ready() -> void:	
@@ -128,9 +132,23 @@ func _try_spawn() -> void:
 ## ultrapassaram a base da pista (should_despawn() == true)
 func _update_active_cars() -> void:
 	var to_remove: Array[CarIaViewController] = []
+ 
 	for ia in _active_cars:
-		if ia.should_despawn():
+		## Detecta ultrapassagem — só conta uma vez por IA,
+		## e apenas se não foi uma colisão (was_hit = false)
+		if _player_ref != null \
+		and not ia.ia_model.passed_player \
+		and not ia.ia_model.was_hit \
+		and ia.position.y >= _player_ref.position.y:
+			ia.ia_model.passed_player = true
+			SignalBus.CarIaPoolManagerSignal_car_passed.emit()
+			PrintLogManager.printlog(CLASS_NAME_LOG,
+				PrintLogManager.LogType.INFO,
+				"car overtaken — signal emitted")
+ 
+		if ia.should_despawn() or ia.ia_model.was_hit:
 			to_remove.append(ia)
+ 
 	for ia in to_remove:
 		_despawn(ia)
 

@@ -68,6 +68,9 @@ func _ready() -> void:
 		_on_days_completed_changed)
 	SignalBus.CarPlayerViewControllerSignal_speed_changed.connect(
 		_on_speed_changed)
+		
+	SignalBus.CarIaPoolManagerSignal_car_passed.connect(
+		_on_car_overtaken)
 
 	_update_distance_label()
 	_update_days_completed_label()
@@ -139,3 +142,10 @@ func advance_odometer() -> void:
 	if completed:
 		model.distance += 1
 		_update_distance_label()
+
+func _on_car_overtaken() -> void:
+	model.cars_remaining = max(model.cars_remaining - 1, 0)
+	_update_cars_remaining_label()
+	PrintLogManager.printlog(CLASS_NAME_LOG,
+		PrintLogManager.LogType.INFO,
+		"car overtaken — cars_remaining=%d" % model.cars_remaining)
