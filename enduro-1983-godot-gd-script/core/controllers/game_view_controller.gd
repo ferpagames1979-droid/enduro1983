@@ -11,3 +11,4 @@ func _ready() -> void:
 							" _ready()")
 	CarIaPoolView._pista = %PistaBaseView
 	CarIaPoolView._player_ref = %CarPlayerView
+	

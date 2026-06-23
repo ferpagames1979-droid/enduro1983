@@ -18,7 +18,7 @@ var ia_model: CarIaModel = null
 
 var pista: PistaBaseViewController = null
 
-const PUSH_DISTANCE: float = 120
+const PUSH_DISTANCE : float = 120
 
 func _on_ready() -> void:
 	car_type = CarType.IA
@@ -77,23 +77,25 @@ func setup(relative_speed: float, lane: CarIaModel.Lane,
 	pista_ref: PistaBaseViewController) -> void:
 	ia_model.relative_speed = relative_speed
 	ia_model.lane = lane
-	ia_model.screen_y = ia_model.horizon_y
-	ia_model.passed_player = false  
-	ia_model.was_hit = false        
+	ia_model.screen_y = ia_model.horizon_y	  
+	ia_model.passed_player = false
+	ia_model.was_hit = false
 	pista = pista_ref
 	position.y = ia_model.horizon_y
 	
-	
-func push_away(player_x: float) -> void:
+func push_away(player_x : float) -> void:
 	ia_model.was_hit = true
-	## Empurra para o lado oposto ao player
 	if position.x >= player_x:
 		position.x += PUSH_DISTANCE
 	else:
 		position.x -= PUSH_DISTANCE
-	PrintLogManager.printlog(CLASS_NAME_LOG_CHILD,
-		PrintLogManager.LogType.INFO,
-		"push_away — IA empurrada para x=%.1f" % position.x)
+	PrintLogManager.printlog(CLASS_NAME_LOG_CHILD, 
+							PrintLogManager.LogType.DEBUG,
+							"push_away - IA empurrada para x = %.1f" % position.x)
+	
+	
+	
+	
 		
 		
 		
