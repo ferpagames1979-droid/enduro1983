@@ -25,9 +25,12 @@ func _on_ready() -> void:
 	ia_model = CarIaModel.new()
 	model = ia_model
 	set_car_color(IA_COLORS[randi() % IA_COLORS.size()])
+	area_2d.area_entered.connect(_on_area_entered)
 	PrintLogManager.printlog(CLASS_NAME_LOG_CHILD,
 		PrintLogManager.LogType.INFO,
 		"_on_ready")
+	SignalBus.DayViewControllerSignal_period_changed.connect(
+	_on_period_changed)
 
 
 func _handle_movement(delta: float) -> void:
@@ -94,8 +97,16 @@ func push_away(player_x : float) -> void:
 							"push_away - IA empurrada para x = %.1f" % position.x)
 	
 	
-	
+func _on_area_entered(area: Area2D) -> void:
+	var other_ia: CarIaViewController = area.get_parent() as CarIaViewController
+	if other_ia == null:
+		return
+
+	if ia_model.relative_speed > other_ia.ia_model.relative_speed:
+		var push_direction: float = 1.0 if position.x >= other_ia.position.x else -1.0
+		other_ia.position.x += push_direction * 30.0
 	
 		
-		
+func _on_period_changed(period: DayModel.DayPeriod) -> void:
+	set_night_mode(period == DayModel.DayPeriod.NIGHT)
 		

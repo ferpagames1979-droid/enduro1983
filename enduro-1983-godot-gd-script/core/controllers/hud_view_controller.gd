@@ -67,9 +67,9 @@ func _ready() -> void:
 	SignalBus.HudViewControllerSignal_days_completed_changed.connect(
 		_on_days_completed_changed)
 	SignalBus.CarPlayerViewControllerSignal_speed_changed.connect(
-		_on_speed_changed)
-		
+		_on_speed_changed)		
 	SignalBus.CarIaPoolManagerSignal_car_passed.connect(_on_car_overtaken)
+	SignalBus.DayViewControllerSignal_period_changed.connect(_on_period_changed)
 
 	_update_distance_label()
 	_update_days_completed_label()
@@ -149,3 +149,9 @@ func _on_car_overtaken() -> void:
 							PrintLogManager.LogType.INFO,
 							"_on_car_overtaken - cars_remaining=%d" % 
 							model.cars_remaining)
+							
+func _on_period_changed(period : DayModel.DayPeriod) -> void:
+	PrintLogManager.printlog(CLASS_NAME_LOG, PrintLogManager.LogType.INFO, 
+	"period changed")
+	_update_days_completed_label()
+	

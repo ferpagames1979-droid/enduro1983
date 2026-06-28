@@ -12,7 +12,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.5411765, 0.5411765, 0.5411765, 1)
+color = Color(0.4326237, 0.43262374, 0.4326237, 1)
 script = ExtResource("1_shmh3")
 
 [node name="Clouds" type="Parallax2D" parent="."]
@@ -22,6 +22,7 @@ repeat_times = 2
 
 [node name="CloudsSprite" type="Sprite2D" parent="Clouds"]
 unique_name_in_owner = true
+z_index = 1
 position = Vector2(576, 140)
 scale = Vector2(1.1, 1.1)
 texture = ExtResource("1_mr5mm")
@@ -33,6 +34,7 @@ repeat_times = 4
 
 [node name="CitySprite" type="Sprite2D" parent="City"]
 unique_name_in_owner = true
+z_index = 1
 position = Vector2(592, 261)
 scale = Vector2(1.1, 1.1)
 texture = ExtResource("3_i1k0s")
@@ -51,3 +53,11 @@ z_index = -5
 width = 2.0
 texture = ExtResource("4_shmh3")
 texture_mode = 1
+
+[node name="FieldRect" type="Sprite2D" parent="."]
+unique_name_in_owner = true
+self_modulate = Color(0.37665847, 0.37665847, 0.37665847, 1)
+z_index = -10
+position = Vector2(547, 419.5)
+scale = Vector2(26.360003, 4.2773438)
+texture = ExtResource("4_shmh3")

@@ -29,10 +29,17 @@ const CLASS_NAME_LOG: String = "PistaBaseViewController"
 
 var model: PistaBaseModel
 
+# terreno
+@onready var field_rect: Sprite2D = %FieldRect
+
+
 ## Bordas esquerda e direita da pista — Line2D com ShaderMaterial
 ## de tracejado animado (road_dash.gdshader)
 @onready var road_edge_left: Line2D = %RoadEdgeLeft
 @onready var road_edge_right: Line2D = %RoadEdgeRight
+
+@onready var clouds_sprite: Sprite2D = %CloudsSprite
+@onready var city_sprite: Sprite2D = %CitySprite
 
 ## Parallax2D do céu — scroll constante via autoscroll, independente da curva
 @onready var clouds: Parallax2D = %Clouds
@@ -59,8 +66,7 @@ func _ready() -> void:
 		PrintLogManager.LogType.INFO,
 		CLASS_NAME_LOG + " _ready()")
 	SignalBus.CarPlayerViewControllerSignal_speed_changed.connect(
-		_on_speed_changed)
-	color = model.color_day
+		_on_speed_changed)	
 
 	randomize()
 
@@ -266,3 +272,7 @@ func get_half_width_at(t: float) -> float:
 	var half_top: float = model.road_top_width / 2.0
 	var half_bottom: float = model.road_bottom_width / 2.0
 	return lerp(half_top, half_bottom, t)
+	
+
+func set_field_color(new_color: Color) -> void:
+	color = new_color
