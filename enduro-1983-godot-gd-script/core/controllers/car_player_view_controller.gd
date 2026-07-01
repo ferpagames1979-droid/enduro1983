@@ -69,6 +69,7 @@ func _handle_movement(delta: float) -> void:
 			model.current_speed - model.brake_force * delta * 60,
 			model.min_speed)
 		sprite_frames.set_animation_speed("default", 3)
+		SoundManager.play_sfx("brake")
 	else:
 		model.current_speed = max(
 			model.current_speed - model.deceleration * delta * 60,
@@ -104,14 +105,21 @@ func trigger_crash() -> void:
 	model.crash_timer = model.crash_penalty_duration
 	model.current_speed = model.min_speed
 	sprite_frames.set_animation_speed("default", 3)
+	SignalBus.CarPlayerViewControllerSignal_crashed.emit()
 	
 func _on_weather_changed(weather: WeatherModel.Weather) -> void:
-	match  weather:
+	match weather:
 		WeatherModel.Weather.SNOW:
-			model.lateral_speed = model.lateral_speed_base * WeatherModel.SNOW_LATERAL_SPEED_MULTIPLIER
-		_:
+			model.lateral_speed = model.lateral_speed_base * \
+				WeatherModel.SNOW_LATERAL_SPEED_MULTIPLIER
+			set_car_color(Color.WHITE)  ## neve = branco normal
+		WeatherModel.Weather.FOG:
+			model.lateral_speed = model.lateral_speed_base  ## fog = sem penalidade
+			set_car_color(Color.DIM_GRAY)
+		WeatherModel.Weather.CLEAR:
 			model.lateral_speed = model.lateral_speed_base
-			
-	PrintLogManager.printlog(CLASS_NAME_LOG_CHILD, 
-							PrintLogManager.LogType.INFO,
-							"weather changed - lateral_speed: %.1f" % model.lateral_speed)
+			set_car_color(Color.WHITE)
+
+	PrintLogManager.printlog(CLASS_NAME_LOG_CHILD,
+		PrintLogManager.LogType.INFO,
+		"weather changed — lateral_speed: %.1f" % model.lateral_speed)

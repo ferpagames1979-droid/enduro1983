@@ -92,6 +92,7 @@ func push_away(player_x : float) -> void:
 		position.x += PUSH_DISTANCE
 	else:
 		position.x -= PUSH_DISTANCE
+	
 	PrintLogManager.printlog(CLASS_NAME_LOG_CHILD, 
 							PrintLogManager.LogType.DEBUG,
 							"push_away - IA empurrada para x = %.1f" % position.x)

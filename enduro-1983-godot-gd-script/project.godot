@@ -19,6 +19,7 @@ config/icon="res://icon.svg"
 PrintLogManager="*res://core/managers/PrintLogManager.gd"
 SignalBus="*res://core/signal_bus/SignalBus.gd"
 CarIaPoolView="*res://views/car_ia_pool_view/car_ia_pool_view.tscn"
+SoundManager="*res://core/managers/SoundManager.gd"
 
 [display]
 
