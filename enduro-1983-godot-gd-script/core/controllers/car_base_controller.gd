@@ -23,6 +23,7 @@ enum CarType { PLAYER, IA }
 var car_type: CarType = CarType.PLAYER
 var model: CarModel
 
+
 @onready var head_lights: Sprite2D = %HeadLights
 
 ## 📌
@@ -31,7 +32,8 @@ func _ready() -> void:
 		PrintLogManager.LogType.INFO,
 		" _ready()")
 	model = CarModel.new()
-
+	model.lateral_speed_base = model.lateral_speed
+	
 	const ROAD_BOTTOM_HALF_WIDTH: float = 400.0
 	const ROAD_CENTER_X: float = 576.0
 

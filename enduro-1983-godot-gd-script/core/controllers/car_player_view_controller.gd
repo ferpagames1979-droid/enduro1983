@@ -33,6 +33,7 @@ func _on_ready() -> void:
 	PrintLogManager.printlog(CLASS_NAME_LOG_CHILD,
 		PrintLogManager.LogType.INFO,
 		"_on_ready")
+	SignalBus.WeatherViewControllerSignal_weather_changed.connect(_on_weather_changed)
 
 ## 📌
 ## Quando is_crashed=true: ignora input, mantém min_speed,
@@ -103,3 +104,14 @@ func trigger_crash() -> void:
 	model.crash_timer = model.crash_penalty_duration
 	model.current_speed = model.min_speed
 	sprite_frames.set_animation_speed("default", 3)
+	
+func _on_weather_changed(weather: WeatherModel.Weather) -> void:
+	match  weather:
+		WeatherModel.Weather.SNOW:
+			model.lateral_speed = model.lateral_speed_base * WeatherModel.SNOW_LATERAL_SPEED_MULTIPLIER
+		_:
+			model.lateral_speed = model.lateral_speed_base
+			
+	PrintLogManager.printlog(CLASS_NAME_LOG_CHILD, 
+							PrintLogManager.LogType.INFO,
+							"weather changed - lateral_speed: %.1f" % model.lateral_speed)

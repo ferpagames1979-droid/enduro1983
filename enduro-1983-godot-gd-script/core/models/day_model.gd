@@ -58,3 +58,6 @@ const CARS_DAY_ONE : int = 200
 const CARS_DAY_TWO_PLUS : int = 300
 
 var current_day : int = 1
+
+#
+var field_snow_color: Color = Color.WHITE_SMOKE

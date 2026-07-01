@@ -59,6 +59,10 @@ var _current_segment_direction: int = 0
 ## à velocidade atual do carro para dar sensação de movimento
 var _texture_offset: float = 0.0
 
+# weather sprite
+@onready var weather_sprite: Sprite2D = %WeatherSprite
+
+
 ## 📌
 func _ready() -> void:
 	model = PistaBaseModel.new()

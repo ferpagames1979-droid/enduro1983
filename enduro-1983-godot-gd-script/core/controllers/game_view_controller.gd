@@ -6,6 +6,8 @@ const CLASS_NAME_LOG= "GameViewController"
 @onready var car_player_view: CarPlayerViewController = %CarPlayerView
 @onready var day_view_controller: DayViewController = %DayViewController
 @onready var pista_base_view: PistaBaseViewController = %PistaBaseView
+@onready var weather_view_controller: WeatherViewController = %WeatherViewController
+
 
 func _ready() -> void:	
 	PrintLogManager.printlog(CLASS_NAME_LOG, 
@@ -15,6 +17,10 @@ func _ready() -> void:
 	CarIaPoolView._player_ref = %CarPlayerView
 	
 	day_view_controller._pista = pista_base_view
+	
+	#weather
+	weather_view_controller._pista = pista_base_view
+	weather_view_controller._day = day_view_controller
 	
 	SignalBus.DayViewControllerSignal_day_ended.connect(_on_day_ended)
 	

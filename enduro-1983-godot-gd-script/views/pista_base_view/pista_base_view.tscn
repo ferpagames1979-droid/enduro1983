@@ -41,6 +41,7 @@ texture = ExtResource("3_i1k0s")
 
 [node name="RoadEdgeLeft" type="Line2D" parent="."]
 unique_name_in_owner = true
+self_modulate = Color(0, 0, 1, 1)
 z_index = -5
 points = PackedVector2Array(159, 203)
 width = 2.0
@@ -60,4 +61,12 @@ self_modulate = Color(0.37665847, 0.37665847, 0.37665847, 1)
 z_index = -10
 position = Vector2(547, 419.5)
 scale = Vector2(26.360003, 4.2773438)
+texture = ExtResource("4_shmh3")
+
+[node name="WeatherSprite" type="Sprite2D" parent="."]
+unique_name_in_owner = true
+self_modulate = Color(1, 1, 1, 0)
+z_index = 10
+position = Vector2(567.5, 400.5)
+scale = Vector2(26.14, 4.1289063)
 texture = ExtResource("4_shmh3")

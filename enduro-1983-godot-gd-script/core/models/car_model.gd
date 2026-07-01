@@ -25,6 +25,7 @@ var acceleration: float = 60.0
 var deceleration: float = 40.0
 var brake_force: float = 120.0
 var lateral_speed: float = 250.0
+var lateral_speed_base: float = 250
 
 ## Flag de colisão — quando true, o player fica travado em
 ## min_speed e sem controle por crash_penalty_duration segundos

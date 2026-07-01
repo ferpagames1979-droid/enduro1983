@@ -19,3 +19,6 @@ signal CarIaPoolManagerSignal_car_passed
 ## DayViewController
 signal DayViewControllerSignal_period_changed(period : DayModel.DayPeriod)
 signal DayViewControllerSignal_day_ended()
+
+## WeatherViewController
+signal  WeatherViewControllerSignal_weather_changed(weather: WeatherModel.Weather)
